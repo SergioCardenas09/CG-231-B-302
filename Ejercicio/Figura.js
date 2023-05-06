@@ -6,7 +6,7 @@ var HEIGHT = window.innerHeight;
 //render
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(WIDTH, HEIGHT);
-renderer.setClearColor(0xDDDDDD, 1);
+renderer.setClearColor(0xffffff, 1);
 document.body.appendChild(renderer.domElement);
 
 var scene = new THREE.Scene();
@@ -23,9 +23,11 @@ scene.add(camera);
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 //luz
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(-1, 2, 4);
-scene.add(light);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight.position.set(0, 0, 10);
+scene.add(ambientLight);
+scene.add(directionalLight);
 
 //grilla
 const size = 150;
@@ -37,15 +39,15 @@ const gridHelper = new THREE.GridHelper(size, divisions);
 scene.add(gridHelper);
 
 //figura
-// Crea un icosaedro (20 caras)
-scene.add(IcosaedroFuncion(20));
+// Crear la figura
+const figura = CrearFigura3D(15);
+figura.material.side = THREE.DoubleSide;
+scene.add(figura);
 
 //funcion de imagen orbit controls
-
 function render() {
   requestAnimationFrame(render);
   renderer.render(scene, camera);
 }
 
 render();
-

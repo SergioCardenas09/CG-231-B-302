@@ -1,52 +1,34 @@
-function IcosaedroFuncion() {
+function CrearFigura3D(caras) {
+  const radius=1;
+  const shape = new THREE.Shape();
 
-  var phi = (1 + Math.sqrt(5)) / 2;
+  //formacion de la figura 2D para asegurar su correcta formacion
+  for (let i = 0; i < (caras-2); i++) {
+    const x = radius * Math.cos(i * 2 * Math.PI / caras);
+    const y = radius * Math.sin(i * 2 * Math.PI / caras);
+    if (i === 0) {
+      shape.moveTo(x, y);
+    } else {
+      shape.lineTo(x, y);
+    }
+  }
+  // Extrucion de las caras y quitamos el biselado
+  const extrudeSettings = {
+    depth: 1,
+    bevelEnabled: false 
+  };
 
-  var vertices = [  
-      [-1, phi, 0],
-      [1, phi, 0],
-      [-1, -phi, 0],
-      [1, -phi, 0],
-      [0, -1, phi],
-      [0, 1, phi],
-      [0, -1, -phi],
-      [0, 1, -phi],
-      [phi, 0, -1],
-      [phi, 0, 1],
-      [-phi, 0, -1],
-      [-phi, 0, 1]
-  ];
+  // Creamos la figura ya 3D
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 
-  var faces = [
-      [0, 11, 5],
-      [0, 5, 1],
-      [0, 1, 7],
-      [0, 7, 10],
-      [0, 10, 11],
-      [1, 5, 9],
-      [5, 11, 4],
-      [11, 10, 2],
-      [10, 7, 6],
-      [7, 1, 8],
-      [3, 9, 4],
-      [3, 4, 2],
-      [3, 2, 6],
-      [3, 6, 8],
-      [3, 8, 9],
-      [4, 9, 5],
-      [2, 4, 11],
-      [6, 2, 10],
-      [8, 6, 7],
-      [9, 8, 1]
-  ];  
+  const material = new THREE.MeshBasicMaterial({ color: 0xFFA500 });
+  const mesh = new THREE.Mesh(geometry, material);
 
-  var geometry = new THREE.BufferGeometry();      
-  // Crear geometría del buffer a partir de los datos de vértices y caras
-  geometry.setIndex(faces.flat());
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices.flat(), 3));
+  // Material para visualizar los vertices
+  const materialVertices = new THREE.LineBasicMaterial({color: 0x000000});
+  const meshVertices = new THREE.LineLoop(geometry, materialVertices);
 
-  var material = new THREE.MeshBasicMaterial({color: 0x8c00ff, wireframe: true});
-  var mesh = new THREE.Mesh(geometry, material);
-  
+  scene.add(meshVertices);
+
   return mesh;
 }
